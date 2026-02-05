@@ -1,5 +1,5 @@
 //
-//  ContentView.swift
+//  DashboardView.swift
 //  Notie
 //
 //  Created by Neftali Samarey on 2/4/26.
@@ -13,30 +13,7 @@ struct DashboardView: View {
     @Query private var items: [Item]
 
     var body: some View {
-        NavigationSplitView {
-            List {
-                ForEach(items) { item in
-                    NavigationLink {
-                        Text("Item at \(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))")
-                    } label: {
-                        Text(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))
-                    }
-                }
-                .onDelete(perform: deleteItems)
-            }
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    EditButton()
-                }
-                ToolbarItem {
-                    Button(action: addItem) {
-                        Label("Add Item", systemImage: "plus")
-                    }
-                }
-            }
-        } detail: {
-            Text("Select an item")
-        }
+        mainContent()
     }
 
     private func addItem() {
@@ -51,6 +28,41 @@ struct DashboardView: View {
             for index in offsets {
                 modelContext.delete(items[index])
             }
+        }
+    }
+}
+
+fileprivate extension DashboardView {
+
+    func mainContent() -> some View {
+        NavigationStack {
+            ScrollView {
+                VStack(alignment: .center, spacing: 10) {
+                    DashboardInfoView(eventName: "Credit Card", dueDate: "Feb 20, 2026")
+                        .frame(maxWidth: .infinity)
+
+                    Spacer()
+                }
+                .padding(.horizontal, 15)
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .scrollContentBackground(.hidden)
+            .background(
+                Color.mainBackground.ignoresSafeArea()
+            )
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button(action: { }) {
+                        Image(systemName: "gear")
+                    }
+                }
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(action: { }) {
+                        Image(systemName: "plus")
+                    }
+                }
+            }
+            .toolbarBackground(.clear, for: .navigationBar)
         }
     }
 }
