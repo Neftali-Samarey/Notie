@@ -14,6 +14,9 @@ struct DashboardView: View {
 
     var body: some View {
         mainContent()
+            .overlay(alignment: .bottom) {
+                actionButton
+            }
     }
 
     private func addItem() {
@@ -56,13 +59,24 @@ fileprivate extension DashboardView {
                         Image(systemName: "gear")
                     }
                 }
-                ToolbarItem(placement: .navigationBarTrailing) {
+                /*ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: { }) {
                         Image(systemName: "plus")
                     }
-                }
+                }*/
             }
             .toolbarBackground(.clear, for: .navigationBar)
+        }
+    }
+
+    var actionButton: some View {
+        Button(action: { /* Add action here if needed */ }) {
+            Image(systemName: "plus")
+                .foregroundColor(.white)
+                .font(.system(size: 24, weight: .bold))
+                .frame(width: 56, height: 56)
+                .background(Circle().fill(Color.gradientCleanRed))
+                .shadow(radius: 2)
         }
     }
 }

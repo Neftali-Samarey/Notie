@@ -9,5 +9,5 @@ import Foundation
 
 public enum Constants {
     public static let dashboardInfoViewHeight: CGFloat = 225
-    public static let cardCornerRadius: CGFloat = 12
+    public static let cardCornerRadius: CGFloat = 24
 }
