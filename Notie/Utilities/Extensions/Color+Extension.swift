@@ -19,4 +19,15 @@ extension Color {
         startPoint: .topLeading,
         endPoint: .bottomTrailing
     )
+    static let darkModeGray = Color(red: 44/255.0, green: 44/255.0, blue: 44/255.0)
+
+    // Gradients
+    static let gradientPomegranate = LinearGradient(
+        gradient: Gradient(colors: [
+            Color(red: 244/255.0, green: 7/255.0, blue: 82/255.0),
+            Color(red: 249/255.0, green: 171/255.0, blue: 143/255.0)
+        ]),
+        startPoint: .leading,
+        endPoint: .trailing
+    )
 }
