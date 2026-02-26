@@ -10,12 +10,10 @@ import SwiftData
 
 @Model
 final class EventItem {
-    //@Attribute(.unique) private(set) var id: UUID
     var title: String
     var date: Date
 
     init(title: String, date: Date) {
-        //self.id = UUID()
         self.title = title
         self.date = date
     }
