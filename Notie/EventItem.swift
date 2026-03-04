@@ -12,9 +12,11 @@ import SwiftData
 final class EventItem {
     var title: String
     var date: Date
+    var amount: Double?
 
-    init(title: String, date: Date) {
+    init(title: String, date: Date, amount: Double? = nil) {
         self.title = title
         self.date = date
+        self.amount = amount
     }
 }
