@@ -66,8 +66,6 @@ struct DashboardInfoView: View {
         self.dueDate = dueDate
     }
 
-    let entry: EntryItem = EntryItem(icon: .creditCard, title: "Con Ed Bill", event: [Event(icon: .calendar, text: "March 8, 2026"), Event(icon: .alert, text: "Due in 7 days")])
-
     var body: some View {
         content
     }
@@ -83,79 +81,7 @@ fileprivate extension DashboardInfoView {
         Group {
             switch viewType {
             case .overview:
-                VStack(alignment: .leading) {
-                    Group {
-                        HStack {
-                            VStack(alignment: .leading, spacing: 10) {
-                                Text("Next Due")
-                                    .foregroundStyle(Color.gray.opacity(0.8))
-                                    .font(.system(size: 12, weight: .medium))
-                                Text(parseEvent(with: events.first).title)
-                                    .font(.system(size: 20, weight: .medium))
-                                Text("Due: \(parseEvent(with: events.first).date.formatted(date: .long, time: .omitted))")
-                                    .font(.system(size: 14, weight: .regular))
-                            }
-
-                            Spacer()
-
-                            VStack(alignment: .center) {
-                                Circle()
-                                    .frame(width: 65, height: 65)
-                                    .foregroundStyle(Color.white)
-                                    .overlay(alignment: .center) {
-                                        VStack {
-                                            Text("1")
-                                                .foregroundStyle(Color.black)
-                                                .font(.system(size: 20, weight: .medium))
-                                            Text("day")
-                                                .foregroundStyle(Color.gray)
-                                                .font(.system(size: 13, weight: .regular))
-                                        }
-                                    }
-                                    .padding(.trailing, 8)
-                                    .padding(.top, 8)
-                                Spacer()
-                            }
-                        }
-
-                        VStack {
-                            Rectangle()
-                                .fill(Color.gray)
-                                .frame(height: 0.5)
-
-                            Spacer()
-
-                            HStack {
-                                Text("Amount")
-                                    .foregroundStyle(Color.gray.opacity(0.8))
-                                    .font(.system(size: 14, weight: .medium))
-                                Spacer()
-                                Text("$100.00")
-                                    .font(.system(size: 18).bold())
-                            }
-                        }
-                        .padding(.bottom, 8)
-                    }
-                    .foregroundStyle(Color.white)
-                    /*HStack {
-                        Image(systemName: entry.icon.iconStringValue)
-                            .font(.system(size: 18.5, weight: .regular, design: .default))
-                            .foregroundStyle(Color.gradientPomegranate)
-                        Text(parseEvent(with: events.first).title)
-                            .font(.system(size: 18.5, weight: .semibold, design: .default))
-                            .lineLimit(1)
-                    }
-                    .padding(.vertical, 5)
-
-                    Divider()
-
-                    VStack(alignment: .leading, spacing: 15) {
-                        ForEach(entry.event) { item in
-                            eventItem(with: item.icon.iconStringValue, and: item.text)
-                        }
-                    }
-                    .padding(.vertical, 8)*/
-                }
+                overviewContentView()
                 .padding()
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .frame(height: 169)
@@ -176,6 +102,69 @@ fileprivate extension DashboardInfoView {
             default:
                 EmptyView()
             }
+        }
+    }
+
+    @ViewBuilder
+    private func overviewContentView() -> some View {
+        if !events.isEmpty {
+            VStack(alignment: .leading) {
+                Group {
+                    HStack {
+                        VStack(alignment: .leading, spacing: 10) {
+                            Text("Next Due")
+                                .foregroundStyle(Color.gray.opacity(0.8))
+                                .font(.system(size: 12, weight: .medium))
+                            Text(parseEvent(with: events.first).title)
+                                .font(.system(size: 20, weight: .medium))
+                            Text("Due: \(parseEvent(with: events.first).date.formatted(date: .long, time: .omitted))")
+                                .font(.system(size: 14, weight: .regular))
+                        }
+
+                        Spacer()
+
+                        VStack(alignment: .center) {
+                            Circle()
+                                .frame(width: 65, height: 65)
+                                .foregroundStyle(Color.white)
+                                .overlay(alignment: .center) {
+                                    daysLeft()
+                                }
+                                .padding(.trailing, 8)
+                                .padding(.top, 8)
+                            Spacer()
+                        }
+                    }
+
+                    if events.first?.amount != nil {
+                        VStack {
+                            Rectangle()
+                                .fill(Color.gray)
+                                .frame(height: 0.5)
+
+                            Spacer()
+
+                            HStack {
+                                Text("Amount")
+                                    .foregroundStyle(Color.gray.opacity(0.8))
+                                    .font(.system(size: 14, weight: .medium))
+                                Spacer()
+                                Text("$100.00")
+                                    .font(.system(size: 18).bold())
+                            }
+                        }
+                        .padding(.bottom, 8)
+                    }
+                }
+                .foregroundStyle(Color.white)
+            }
+        } else {
+            VStack(alignment: .center) {
+                Text("No upcoming bills")
+                    .foregroundStyle(Color.gray.opacity(0.8))
+                    .font(.system(size: 18, weight: .medium))
+            }
+            .frame(maxWidth: .infinity, alignment: .center)
         }
     }
 
@@ -232,24 +221,55 @@ fileprivate extension DashboardInfoView {
         } else {
             VStack(alignment: .leading) {
                 Text("Upcoming")
-                    .font(.system(size: 18)).fontWeight(.medium)
-                    .padding(.bottom, 5)
+                   .font(.system(size: 18)).fontWeight(.medium)
+                   .padding(.bottom, 5)
 
                 ForEach(events) { item in
-                    HStack {
-                        Text(item.title)
-                        Spacer()
-                        Text(item.date.formatted(date: .numeric, time: .omitted))
-                    }
-                    .padding()
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .background(
-                        RoundedRectangle(cornerRadius: Constants.cardListItemRadius)
-                            .fill(colorMode)
-                    )
+                    RoundedRectangle(cornerRadius: 12)
+                        .fill(Color.white)
+                        .frame(height: 74)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 12)
+                                .stroke(Color(.lightGray).opacity(0.5), lineWidth: 1)
+                        )
+                        .overlay {
+                            HStack {
+                                Text(item.title)
+                                Spacer()
+                                Text(item.date.formatted(date: .numeric, time: .omitted))
+                            }
+                            .padding()
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                        }
                 }
             }
         }
+    }
+
+    @ViewBuilder
+    func daysLeft() -> some View {
+        let days = absoluteDaysFromNow(since: events.first?.date ?? Date())
+        VStack {
+            Text("\(days)")
+                .foregroundStyle(Color.black)
+                .font(.system(size: 20, weight: .medium))
+            Text(days > 1 ? "days" : "day")
+                .foregroundStyle(Color.gray)
+                .font(.system(size: 13, weight: .regular))
+        }
+    }
+
+    func daysFromNow(since date: Date) -> Int {
+        let calendar = Calendar.current
+        let startOfInput = calendar.startOfDay(for: date)
+        let startOfToday = calendar.startOfDay(for: Date())
+
+        let components = calendar.dateComponents([.day], from: startOfInput, to: startOfToday)
+        return components.day ?? 0
+    }
+
+    func absoluteDaysFromNow(since date: Date) -> Int {
+        abs(daysFromNow(since: date))
     }
 }
 
@@ -260,9 +280,17 @@ fileprivate extension DashboardInfoView {
         return (event.title, event.date)
     }
 
+    var eventCount: Int {
+        events.count
+    }
+
+    var eventDueSoon: Int {
+        events.count
+    }
+
     var overviewBills: [OverviewBills] {
-        let billsCount = 0
-        let billsDueSoon = 0
+        let billsCount = eventCount
+        let billsDueSoon = eventDueSoon
         var overview: [OverviewBills] = []
         overview.append(OverviewBills(title: "Total Bills", icon: "receipt.fill", count: "\(billsCount)"))
         overview.append(OverviewBills(title: "Due Soon", icon: "clock.badge.fill", count: "\(billsDueSoon)"))
