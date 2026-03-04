@@ -16,6 +16,7 @@ struct DashboardView: View {
     @Environment(\.colorScheme) private var colorScheme
 
     @State private var isModalSheetPresented: Bool = false
+    @State private var showSettings = false
     @State private var textValue: String = ""
     @State private var datePickerDate = Date()
 
@@ -40,13 +41,16 @@ struct DashboardView: View {
                 modalContent
                     .presentationDetents([.medium, .large])
             }
-            .onAppear {
+            .fullScreenCover(isPresented: $showSettings) {
+                SettingsView()
+            }
+            /*.onAppear {
                 print("Event count: \(events.count)")
                 for event in events {
                     updateDueDateIfPast(for: event, context: modelContext)
                     print("- Event: \(event.title) on \(event.date.formatted(date: .long, time: .omitted))")
                 }
-            }
+            }*/
     }
 
     /*private func addItem() {
@@ -90,7 +94,7 @@ fileprivate extension DashboardView {
             )
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button(action: { }) {
+                    Button(action: { showSettings.toggle() }) {
                         Image(systemName: "gear")
                     }
                 }
@@ -140,14 +144,6 @@ fileprivate extension DashboardView {
                 datePickerDate = Date()
 
                 isModalSheetPresented = false
-                /*Task {
-                    //guard !textValue.isEmpty && datePickerDate != Date() else { return }
-                    let entry = EventItem(title: textValue, date: datePickerDate)
-                    /*guard !textValue.isEmpty && datePickerDate != Date() else { return }
-                    let newItem = EventItem(title: textValue, date: datePickerDate)
-                    modelContext.insert(newItem)*/
-                    await saveItem(entry)
-                }*/
             } label: {
                 Text("Add")
                     .font(.system(size: 20, weight: .medium))
