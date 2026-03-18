@@ -12,3 +12,7 @@ public enum Constants {
     public static let cardCornerRadius: CGFloat = 24
     public static let cardListItemRadius: CGFloat = 12
 }
+
+public extension Constants {
+    static let dueSoonDaysRange: Int = 5
+}

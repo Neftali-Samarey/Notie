@@ -87,7 +87,8 @@ fileprivate extension DashboardInfoView {
                 .frame(height: 169)
                 .background(
                     RoundedRectangle(cornerRadius: Constants.cardCornerRadius)
-                        .fill(Color.black) // colorMode
+                        .fill(Color.white) // colorMode
+                        .shadow(color: Color.black.opacity(0.1), radius: 2.5, x: 0, y: 1)
                 )
             case .grid:
                 VStack(alignment: .leading) {
@@ -115,9 +116,12 @@ fileprivate extension DashboardInfoView {
                             Text("Next Due")
                                 .foregroundStyle(Color.gray.opacity(0.8))
                                 .font(.system(size: 12, weight: .medium))
+                                .textCase(.uppercase)
                             Text(parseEvent(with: events.first).title)
+                                .foregroundStyle(Color.black)
                                 .font(.system(size: 20, weight: .medium))
                             Text("Due: \(parseEvent(with: events.first).date.formatted(date: .long, time: .omitted))")
+                                .foregroundStyle(Color.black)
                                 .font(.system(size: 14, weight: .regular))
                         }
 
@@ -126,7 +130,7 @@ fileprivate extension DashboardInfoView {
                         VStack(alignment: .center) {
                             Circle()
                                 .frame(width: 65, height: 65)
-                                .foregroundStyle(Color.white)
+                                .foregroundStyle(Color.blue)
                                 .overlay(alignment: .center) {
                                     daysLeft()
                                 }
@@ -251,10 +255,10 @@ fileprivate extension DashboardInfoView {
         let days = absoluteDaysFromNow(since: events.first?.date ?? Date())
         VStack {
             Text("\(days)")
-                .foregroundStyle(Color.black)
+                .foregroundStyle(Color.white)
                 .font(.system(size: 20, weight: .medium))
             Text(days > 1 ? "days" : "day")
-                .foregroundStyle(Color.gray)
+                .foregroundStyle(Color.white)
                 .font(.system(size: 13, weight: .regular))
         }
     }

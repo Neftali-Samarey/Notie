@@ -36,6 +36,8 @@ struct DashboardView: View {
                 } catch {
                     print("Request authorization error")
                 }
+
+                await updateEntriesForNextMonth()
             }
             .sheet(isPresented: $isModalSheetPresented) {
                 modalContent
@@ -151,7 +153,7 @@ fileprivate extension DashboardView {
                     .frame(maxWidth: .infinity, alignment: .center)
                     .background(
                         RoundedRectangle(cornerRadius: 12)
-                            .fill(Color.red)
+                            .fill(Color.blueGray)
                     )
                     .foregroundStyle(.white)
             }
@@ -168,8 +170,7 @@ fileprivate extension DashboardView {
                 .foregroundColor(.white)
                 .font(.system(size: 24, weight: .bold))
                 .frame(width: 56, height: 56)
-                .background(Circle().fill(Color.black))
-                //.background(Circle().fill(Color.gradientPomegranate))
+                .background(Circle().fill(Color.blue))
                 .shadow(radius: 2)
         }
     }
@@ -180,6 +181,13 @@ fileprivate extension DashboardView {
     @MainActor
     func saveItem(_ item: EventItem) async {
         modelContext.insert(item)
+    }
+
+    @MainActor
+    func updateEntriesForNextMonth() async {
+        for event in events {
+            updateDueDateIfPast(for: event, context: modelContext)
+        }
     }
 
     func updateDueDateIfPast(for item: EventItem, context: ModelContext) {
@@ -220,6 +228,34 @@ fileprivate extension DashboardView {
             print("Failed to save updated date:", error)
         }
     }*/
+}
+
+fileprivate extension DashboardView {
+
+    func scheduleCalendarNotification(date: Date) {
+        let content = UNMutableNotificationContent()
+        content.title = "Reminder"
+        content.body = "Scheduled event"
+        content.sound = .default
+
+        let components = Calendar.current.dateComponents(
+            [.year, .month, .day, .hour, .minute],
+            from: date
+        )
+
+        let trigger = UNCalendarNotificationTrigger(
+            dateMatching: components,
+            repeats: false
+        )
+
+        let request = UNNotificationRequest(
+            identifier: "calendar_notification",
+            content: content,
+            trigger: trigger
+        )
+
+        UNUserNotificationCenter.current().add(request)
+    }
 }
 
 #Preview {
