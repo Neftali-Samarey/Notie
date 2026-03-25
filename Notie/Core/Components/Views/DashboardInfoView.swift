@@ -276,7 +276,13 @@ fileprivate extension DashboardInfoView {
     }
 
     var eventDueSoon: Int {
-        events.count
+        let threshold = Constants.dueSoonDaysRange
+        let now = Date()
+        guard let thresholdDate = Calendar.current.date(byAdding: .day, value: threshold, to: now) else {
+            return 0
+        }
+        // Count events with date >= now and date <= thresholdDate
+        return events.filter { $0.date >= now && $0.date <= thresholdDate }.count
     }
 
     var overviewBills: [OverviewBills] {
@@ -293,3 +299,4 @@ fileprivate extension DashboardInfoView {
     DashboardInfoView(viewType: .overview, eventName: "AMEX Credit Card", dueDate: "Feb 18, 2026")
     DashboardInfoView(viewType: .listItem)
 }
+
