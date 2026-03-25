@@ -8,49 +8,6 @@
 import SwiftUI
 import SwiftData
 
-public enum IconType: String {
-    case calendar
-    case alert
-    case creditCard
-
-    var iconStringValue: String {
-        switch self {
-        case .calendar:
-            return "calendar"
-        case .alert:
-            return "exclamationmark.triangle.fill"
-        case .creditCard:
-            return "creditcard.fill"
-        }
-    }
-}
-
-public struct Event: Identifiable {
-    public var id = UUID()
-    let icon: IconType
-    let text: String
-}
-
-public struct EntryItem {
-    let icon: IconType
-    let title: String
-    let event: [Event]
-}
-
-public struct OverviewBills: Identifiable {
-    public var id = UUID()
-    let title: String
-    let icon: String
-    let count: String
-}
-
-public enum DashboardViewType {
-    case overview
-    case listItem
-    case grid
-    case none
-}
-
 struct DashboardInfoView: View {
 
     @Environment(\.colorScheme) private var colorScheme
@@ -95,10 +52,10 @@ fileprivate extension DashboardInfoView {
                     Text("Overview")
                         .font(.system(size: 18)).fontWeight(.medium)
 
-                    gridItem(numberOfItems: overviewBills)
+                    gridItem(numberOfItems: overviewBills, style: .shadow)
                 }
             case .listItem:
-                eventItemList(list: events)
+                eventItemList(list: events, style: .shadow)
                     .safeAreaPadding(.bottom, 85)
             default:
                 EmptyView()
@@ -130,7 +87,7 @@ fileprivate extension DashboardInfoView {
                         VStack(alignment: .center) {
                             Circle()
                                 .frame(width: 65, height: 65)
-                                .foregroundStyle(Color.blue)
+                                .foregroundStyle(Color.black.opacity(0.8))
                                 .overlay(alignment: .center) {
                                     daysLeft()
                                 }
@@ -172,16 +129,24 @@ fileprivate extension DashboardInfoView {
         }
     }
 
-    func gridItem(numberOfItems: [OverviewBills] ) -> some View {
+    func gridItem(numberOfItems: [OverviewBills], style: GridItemStyle) -> some View {
         let columns = [GridItem(.flexible()), GridItem(.flexible())]
         return LazyVGrid(columns: columns, spacing: 16) {
             ForEach(numberOfItems) { item in
                 RoundedRectangle(cornerRadius: 12)
                     .fill(Color.white)
                     .frame(height: 90)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 12)
-                            .stroke(Color(.lightGray).opacity(0.5), lineWidth: 1)
+                    .overlay {
+                        if style == .lined {
+                            RoundedRectangle(cornerRadius: 12)
+                                .stroke(Color(.lightGray).opacity(0.5), lineWidth: 1)
+                        }
+                    }
+                    .shadow(
+                        color: style == .shadow ? Color.black.opacity(0.1) : .clear,
+                        radius: style == .shadow ? 2.5 : 0,
+                        x: 0,
+                        y: style == .shadow ? 1 : 0
                     )
                     .overlay {
                         VStack(spacing: 10) {
@@ -191,7 +156,7 @@ fileprivate extension DashboardInfoView {
                                     .foregroundStyle(Color.gray)
                                 Spacer()
                                 Image(systemName: item.icon)
-                                    .font(.system(size: 13, weight: .regular, design: .default))
+                                    .font(.system(size: 13, weight: .regular))
                                     .foregroundStyle(Color.gray)
                             }
                             HStack {
@@ -203,6 +168,12 @@ fileprivate extension DashboardInfoView {
                         .padding(.horizontal, 14)
                         .padding(.vertical, 14)
                     }
+                    /*.overlay(alignment: .topTrailing) {
+                        Circle()
+                            .foregroundStyle(Color.red)
+                            .frame(width: 20, height: 20)
+                            .offset(x: 8, y: -8)
+                    }*/
             }
         }
         .padding(.bottom, 10)
@@ -219,7 +190,7 @@ fileprivate extension DashboardInfoView {
     }
 
     @ViewBuilder
-    private func eventItemList(list: [EventItem]) -> some View {
+    private func eventItemList(list: [EventItem], style: GridItemStyle) -> some View {
         if list.isEmpty {
             EmptyView()
         } else {
@@ -232,12 +203,28 @@ fileprivate extension DashboardInfoView {
                     RoundedRectangle(cornerRadius: 12)
                         .fill(Color.white)
                         .frame(height: 74)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 12)
-                                .stroke(Color(.lightGray).opacity(0.5), lineWidth: 1)
+                        .overlay {
+                            if style == .lined {
+                                RoundedRectangle(cornerRadius: 12)
+                                    .stroke(Color(.lightGray).opacity(0.5), lineWidth: 1)
+                            }
+                        }
+                        .shadow(
+                            color: style == .shadow ? Color.black.opacity(0.1) : .clear,
+                            radius: style == .shadow ? 2.5 : 0,
+                            x: 0,
+                            y: style == .shadow ? 1 : 0
                         )
                         .overlay {
                             HStack {
+                                Circle()
+                                    .frame(width: 40, height: 40)
+                                    .foregroundStyle(Color.gray.opacity(0.1))
+                                    .overlay(alignment: .center) {
+                                        Image(systemName: "creditcard.fill")
+                                            .font(.system(size: 18, weight: .regular))
+                                            .foregroundStyle(.black)
+                                    }
                                 Text(item.title)
                                 Spacer()
                                 Text(item.date.formatted(date: .numeric, time: .omitted))

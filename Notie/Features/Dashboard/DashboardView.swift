@@ -91,6 +91,18 @@ fileprivate extension DashboardView {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .scrollContentBackground(.hidden)
+            /*.background(
+                backgroundColorScheme
+                    .ignoresSafeArea()
+                    .overlay {
+                        GeometryReader { geo in
+                            Color.white
+                                .frame(height: geo.size.height * 0.47)
+                                .frame(maxHeight: .infinity, alignment: .top)
+                                .ignoresSafeArea(.all)
+                        }
+                    }
+            )*/
             .background(
                 backgroundColorScheme.ignoresSafeArea()
             )
@@ -153,7 +165,7 @@ fileprivate extension DashboardView {
                     .frame(maxWidth: .infinity, alignment: .center)
                     .background(
                         RoundedRectangle(cornerRadius: 12)
-                            .fill(Color.blueGray)
+                            .fill(Color.black.opacity(0.8))
                     )
                     .foregroundStyle(.white)
             }
@@ -165,12 +177,15 @@ fileprivate extension DashboardView {
     }
 
     private var actionButton: some View {
-        Button(action: { isModalSheetPresented.toggle() }) {
+        Button {
+            isModalSheetPresented.toggle()
+            HapticFeedbackService.vibrate(.selection)
+        } label: {
             Image(systemName: "plus")
                 .foregroundColor(.white)
                 .font(.system(size: 24, weight: .bold))
                 .frame(width: 56, height: 56)
-                .background(Circle().fill(Color.blue))
+                .background(Circle().fill(Color.black.opacity(0.8)))
                 .shadow(radius: 2)
         }
     }
