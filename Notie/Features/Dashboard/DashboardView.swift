@@ -196,6 +196,7 @@ fileprivate extension DashboardView {
     @MainActor
     func saveItem(_ item: EventItem) async {
         modelContext.insert(item)
+        HapticFeedbackService.vibrate(.success)
     }
 
     @MainActor
