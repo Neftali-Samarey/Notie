@@ -12,7 +12,6 @@ struct DashboardInfoView: View {
 
     @Environment(\.colorScheme) private var colorScheme
     @Query(sort: \EventItem.date, order: .forward) private var events: [EventItem]
-    @StateObject private var settingsViewModel = SettingsViewModel()
     @AppStorage(UserDefaults.Keys.thresholdKey) private var threshold: Int = Constants.dueSoonDaysRange
 
     private let viewType: DashboardViewType
