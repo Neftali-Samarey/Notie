@@ -12,6 +12,11 @@ Notie is a small utility app that allows users to locally save bills & due dates
 <img src='images/dashboard.png' title='App screenshot' width='230px' alt='App Walkthrough' />
 </p>
 
+## Apple Libraries used:
+1. Swift Data
+2. SwiftUI
+3. Concurrency Tasks
+
 ## License
 
     Copyright 2025 Neftali Samarey
