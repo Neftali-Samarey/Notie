@@ -13,6 +13,7 @@ struct DashboardInfoView: View {
     @Environment(\.colorScheme) private var colorScheme
     @Query(sort: \EventItem.date, order: .forward) private var events: [EventItem]
     @AppStorage(UserDefaults.Keys.thresholdKey) private var threshold: Int = Constants.dueSoonDaysRange
+    @Environment(\.modelContext) private var modelContext
 
     private let viewType: DashboardViewType
     private let eventName: String?
@@ -201,6 +202,17 @@ fileprivate extension DashboardInfoView {
                    .padding(.bottom, 5)
 
                 ForEach(events) { item in
+                    SwipeableEventRow(
+                        item: item,
+                        style: style
+                    ) {
+                        delete(item)
+                    }
+                }
+
+                // TODO: remove static card view (non swipeable)
+
+                /*ForEach(events) { item in
                     RoundedRectangle(cornerRadius: 12)
                         .fill(Color.white)
                         .frame(height: 74)
@@ -233,7 +245,7 @@ fileprivate extension DashboardInfoView {
                             .padding()
                             .frame(maxWidth: .infinity, alignment: .leading)
                         }
-                }
+                }*/
             }
         }
     }
@@ -292,6 +304,11 @@ fileprivate extension DashboardInfoView {
         overview.append(OverviewBills(title: "Total Bills", icon: "receipt.fill", count: "\(billsCount)"))
         overview.append(OverviewBills(title: "Due Soon", icon: "clock.badge.fill", count: "\(billsDueSoon)"))
         return overview
+    }
+
+    func delete(_ item: EventItem) {
+        modelContext.delete(item)
+        HapticFeedbackService.vibrate(.success)
     }
 }
 
