@@ -12,6 +12,8 @@ struct DashboardInfoView: View {
 
     @Environment(\.colorScheme) private var colorScheme
     @Query(sort: \EventItem.date, order: .forward) private var events: [EventItem]
+    @StateObject private var settingsViewModel = SettingsViewModel()
+    @AppStorage(UserDefaults.Keys.thresholdKey) private var threshold: Int = Constants.dueSoonDaysRange
 
     private let viewType: DashboardViewType
     private let eventName: String?
@@ -276,7 +278,6 @@ fileprivate extension DashboardInfoView {
     }
 
     var eventDueSoon: Int {
-        let threshold = Constants.dueSoonDaysRange
         let now = Date()
         guard let thresholdDate = Calendar.current.date(byAdding: .day, value: threshold, to: now) else {
             return 0
@@ -299,4 +300,3 @@ fileprivate extension DashboardInfoView {
     DashboardInfoView(viewType: .overview, eventName: "AMEX Credit Card", dueDate: "Feb 18, 2026")
     DashboardInfoView(viewType: .listItem)
 }
-
